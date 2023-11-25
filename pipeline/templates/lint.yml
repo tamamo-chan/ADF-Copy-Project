@@ -1,0 +1,7 @@
+jobs:
+  - job: LintCode
+    displayName: Static code analysis of Bicep code
+    steps:
+      - script: |
+          az bicep build --file ${{parameters.resourceFile}}
+        name: LintBicepCode

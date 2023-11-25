@@ -1,0 +1,19 @@
+jobs:
+  - deployment: 
+    environment: ${{parameters.environmentName}}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - task: AzureResourceManagerTemplateDeployment@3
+              name: DeployResources
+              displayName: Deploy all resources
+              inputs:
+                deploymentScope: 'Subscription'
+                connectedServiceName: ${{parameters.serviceConnection}}
+                deploymentName: $(Build.BuildNumber)
+                location: ${{parameters.location}}
+                subscriptionName: ${{parameters.subscriptionName}}
+                csmFile: ${{parameters.resourceFile}}
+                csmParametersFile: ${{parameters.parametersFile}}

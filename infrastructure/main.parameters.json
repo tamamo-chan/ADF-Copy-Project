@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "allowedIp": {
+        "value": ""
+      },
+      "resourceGroupNameSource": {
+        "value": "RGSOURCEPRD01"
+      },
+      "resourceGroupNameSink": {
+        "value": "RGSINKPRD01"
+      },
+      "containerNameSource": {
+        "value": "source-data"
+      },
+      "folderPathSource": {
+        "value": ""
+      },
+      "containerNameSink": {
+        "value": "sink-data"
+      },
+      "folderPathSink": {
+        "value": ""
+      },
+      "fileName": {
+        "value": ""
+      },
+      "tags": {
+        "value": {
+          "owner": "tamamo-chan",
+          "solution": "adfproject"
+        }
+      }
+    }
+  }
+  

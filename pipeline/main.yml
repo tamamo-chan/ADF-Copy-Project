@@ -1,0 +1,66 @@
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+# --------------------------------------------------------------------------#
+
+trigger: none
+
+# --------------------------------------------------------------------------#
+
+parameters:
+- name: useSelfHostedAgent
+  displayName: Use self-hosted agent?
+  type: boolean
+  default: false
+
+# --------------------------------------------------------------------------#
+
+variables:
+  environmentName: adfproject_prd
+  location: westeurope
+  subscriptionName: 
+  serviceConnection: ADFProjectSC
+  parametersFile: infrastructure/main.parameters.json
+  resourceFile: infrastructure/main.bicep
+  vmImageName: ubuntu-latest
+  ${{ if eq(parameters.useSelfHostedAgent, true)}}:
+    agentName: SelfHostedName
+  ${{ else }}:
+    agentName: Azure Pipelines
+
+# --------------------------------------------------------------------------#
+
+stages:
+
+  - stage: LintAndValidate
+    displayName: Lint and validate the Bicep resources
+    dependsOn:
+    pool:
+      name: $(agentName)
+    jobs:
+      - template: templates/lint.yml
+        parameters:
+          resourceFile: $(resourceFile)
+
+      - template: templates/validate.yml
+        parameters:
+          subscriptionName: $(subscriptionName)
+          serviceConnection: $(serviceConnection)
+          location: $(location)
+          parametersFile: $(parametersFile)
+          resourceFile: $(resourceFile)
+
+  - stage: DeployInfrastructure
+    displayName: Deploy the infrastructure to Azure
+    dependsOn: LintAndValidate
+    pool:
+      name: $(agentName)
+    jobs:
+      - template: templates/deploy_infrastructure.yml
+        parameters:
+          environmentName: $(environmentName)
+          subscriptionName: $(subscriptionName)
+          serviceConnection: $(serviceConnection)
+          location: $(location)
+          parametersFile: $(parametersFile)
+          resourceFile: $(resourceFile)
+

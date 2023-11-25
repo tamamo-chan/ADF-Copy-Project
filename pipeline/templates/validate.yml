@@ -1,0 +1,15 @@
+jobs:
+  - job: 
+    displayName: Validation of the Bicep resources and parameters
+    dependsOn:
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        name: PreflightValidation
+        inputs:
+          deploymentScope: 'Subscription'
+          subscriptionName: ${{parameters.subscriptionName}}
+          ConnectedServiceName: ${{parameters.serviceConnection}}
+          deploymentMode: Validation
+          csmFile: ${{parameters.resourceFile}}
+          csmParametersFile: ${{parameters.parametersFile}}
+          location: ${{parameters.location}}
